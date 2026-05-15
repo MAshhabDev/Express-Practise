@@ -99,7 +99,7 @@ app.get("/api/users", async (req: Request, res: Response) => {
   }
 });
 
-// Get all post by id
+// Get all users by id
 
 app.get("/api/users/:id", async (req: Request, res: Response) => {
   const { id } = req.params;
@@ -122,6 +122,38 @@ app.get("/api/users/:id", async (req: Request, res: Response) => {
     res.status(200).json({
       success: true,
       message: "Users Per Id Rettrived Successfully",
+      data: result.rows[0],
+    });
+  } catch (error: any) {
+    res.status(500).json({
+      success: false,
+
+      message: error.message,
+      error: error,
+    });
+  }
+});
+
+app.put("/api/users/:id", async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const { name, age, password } = req.body;
+
+    const result = await pool.query(
+      `UPDATE users SET name=$1, age=$2, password=$3 WHERE id=$4 RETURNING *`,
+      [name, age, password, id],
+    );
+
+    if (result.rows.length === 0) {
+      res.status(404).json({
+        success: false,
+        message: "Users did not find",
+        data: [],
+      });
+    }
+    res.status(201).json({
+      success: true,
+      message: "Users Per Id Updated Successfully",
       data: result.rows[0],
     });
   } catch (error: any) {
