@@ -4,6 +4,7 @@ import express, {
   type Response,
 } from "express";
 import { Pool } from "pg";
+import config from "./config";
 const app: Application = express();
 const port = 5000;
 
@@ -18,7 +19,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // Connect the PostGreSQL
 const pool = new Pool({
-  connectionString:
+  connectionString: config.connection,
 });
 
 // Create Db table user in the db
@@ -140,7 +141,11 @@ app.put("/api/users/:id", async (req: Request, res: Response) => {
     const { name, age, password } = req.body;
 
     const result = await pool.query(
-      `UPDATE users SET name=$1, age=$2, password=$3 WHERE id=$4 RETURNING *`,
+      `UPDATE users SET 
+      name= COALESCE ($1,name), 
+      age=COALESCE ($2,age), 
+      password=COALESCE ($3,password)
+      WHERE id=$4 RETURNING *`,
       [name, age, password, id],
     );
 
@@ -155,6 +160,32 @@ app.put("/api/users/:id", async (req: Request, res: Response) => {
       success: true,
       message: "Users Per Id Updated Successfully",
       data: result.rows[0],
+    });
+  } catch (error: any) {
+    res.status(500).json({
+      success: false,
+
+      message: error.message,
+      error: error,
+    });
+  }
+});
+
+app.delete("/api/users/:id", async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const result = await pool.query(`DELETE FROM users WHERE id=$1`, [id]);
+    if (result.rowCount === 0) {
+      res.status(404).json({
+        success: false,
+        message: "Users did not find",
+        data: [],
+      });
+    }
+    res.status(200).json({
+      success: true,
+      message: "Users Per Id Deleted Successfully",
+      data: {},
     });
   } catch (error: any) {
     res.status(500).json({
