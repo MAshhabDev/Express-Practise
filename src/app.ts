@@ -4,7 +4,7 @@ import express, {
   type Response,
 } from "express";
 import { userRoute } from "./modules/user/user.route";
-import { pool } from "./db";
+import { profileRoute } from "./modules/profile/profile.route";
 const app: Application = express();
 
 // This is a middleware for json data to read the json body and show the data as json not undefined
@@ -18,6 +18,8 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use("/api/users", userRoute);
 
+app.use("/api/profiles", profileRoute);
+
 app.get("/", (req: Request, res: Response) => {
   //   res.send("Hello World!");
 
@@ -26,6 +28,5 @@ app.get("/", (req: Request, res: Response) => {
     author: "Next Level",
   });
 });
-
 
 export default app;
