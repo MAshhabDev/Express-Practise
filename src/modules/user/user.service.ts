@@ -21,4 +21,39 @@ const getUserFromDB = async () => {
   return result;
 };
 
-export const userService = { createUserIntoDB, getUserFromDB };
+const getSingleUserFromDB = async (id: string) => {
+  const result = await pool.query(
+    `
+  
+  SELECT * FROM users WHERE id=$1`,
+    [id],
+  );
+
+  return result;
+};
+
+const updateUserFromDB = async (payload: IUser, id: string) => {
+  const { name, age, password } = payload;
+
+  const result = await pool.query(
+    `UPDATE users SET 
+      name= COALESCE ($1,name), 
+      age=COALESCE ($2,age), 
+      password=COALESCE ($3,password)
+      WHERE id=$4 RETURNING *`,
+    [name, age, password, id],
+  );
+  return result;
+};
+
+const deleteUserFromDB = async (id: string) => {
+  const result = await pool.query(`DELETE FROM users WHERE id=$1`, [id]);
+  return result;
+};
+export const userService = {
+  createUserIntoDB,
+  getUserFromDB,
+  getSingleUserFromDB,
+  updateUserFromDB,
+  deleteUserFromDB,
+};
