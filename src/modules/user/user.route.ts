@@ -2,6 +2,7 @@ import { Router, type Request, type Response } from "express";
 import { Pool } from "pg";
 import { pool } from "../../db";
 import { userController } from "./user.controller";
+import auth from "../../middleware/auth";
 
 // Declare Mini server
 const router = Router();
@@ -10,7 +11,7 @@ router.post("/", userController.createUser);
 
 // Get all the post
 
-router.get("/", userController.getUser);
+router.get("/", auth(), userController.getUser);
 
 // Get All Post By Id
 
