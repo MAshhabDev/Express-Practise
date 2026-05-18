@@ -5,4 +5,6 @@ const route = Router();
 
 route.post("/", authController.logInUser);
 
+route.get("/:email", authController.singleLogInUser);
+
 export const authRoute = route;

@@ -20,4 +20,22 @@ const logInUser = async (req: Request, res: Response) => {
   }
 };
 
-export const authController = { logInUser };
+const singleLogInUser = async (req: Request, res: Response) => {
+  const { email } = req.params;
+  try {
+    const result = await authService.singleLogInUserFromDB(email as string);
+    res.status(200).json({
+      message: "Authentic Single User Data",
+      data: result.rows[0], //To get all data
+    });
+  } catch (error: any) {
+    res.status(500).json({
+      success: false,
+
+      message: error.message,
+      error: error,
+    });
+  }
+};
+
+export const authController = { logInUser, singleLogInUser };

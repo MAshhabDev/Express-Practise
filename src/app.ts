@@ -6,6 +6,7 @@ import express, {
 import { userRoute } from "./modules/user/user.route";
 import { profileRoute } from "./modules/profile/profile.route";
 import { authRoute } from "./modules/auth/auth.route";
+import logger from "./middleware/logger";
 const app: Application = express();
 
 // This is a middleware for json data to read the json body and show the data as json not undefined
@@ -21,6 +22,8 @@ app.use("/api/users", userRoute);
 
 app.use("/api/profiles", profileRoute);
 app.use("/api/auth", authRoute);
+
+app.use(logger);
 
 app.get("/", (req: Request, res: Response) => {
   //   res.send("Hello World!");
