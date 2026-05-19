@@ -3,6 +3,7 @@ import { Pool } from "pg";
 import { pool } from "../../db";
 import { userController } from "./user.controller";
 import auth from "../../middleware/auth";
+import { User_Role } from "../../types";
 
 // Declare Mini server
 const router = Router();
@@ -11,7 +12,7 @@ router.post("/", userController.createUser);
 
 // Get all the post
 
-router.get("/", auth(), userController.getUser);
+router.get("/", auth(User_Role.admin, User_Role.user), userController.getUser);
 
 // Get All Post By Id
 

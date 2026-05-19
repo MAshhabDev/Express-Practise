@@ -5,16 +5,16 @@ import bcrypt from "bcryptjs";
 
 const createUserIntoDB = async (payload: IUser) => {
   //For insert data into table
-  const { name, email, age, password } = payload;
+  const { name, email, age, password, role } = payload;
 
   const hashPassword = await bcrypt.hash(password, 10);
 
   const result = await pool.query(
     `
-    INSERT INTO users (name, email,age,password) VALUES ($1,$2,$3,$4)
+    INSERT INTO users (name, email,age,password,role) VALUES ($1,$2,$3,$4,COALESCE($5,'user'))
     RETURNING *
     `,
-    [name, email, age, hashPassword],
+    [name, email, age, hashPassword,role],
   );
   delete result.rows[0].password;
 
