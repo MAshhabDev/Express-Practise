@@ -8,6 +8,7 @@ import { profileRoute } from "./modules/profile/profile.route";
 import { authRoute } from "./modules/auth/auth.route";
 import logger from "./middleware/logger";
 const app: Application = express();
+import CookieParser from "cookie-parser";
 
 // This is a middleware for json data to read the json body and show the data as json not undefined
 app.use(express.json());
@@ -17,6 +18,10 @@ app.use(express.text());
 // // This is a middleware for nested/form data to show the data as json not undefined
 
 app.use(express.urlencoded({ extended: true }));
+
+// For get cokkie type data
+
+app.use(CookieParser());
 
 app.use("/api/users", userRoute);
 
