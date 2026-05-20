@@ -9,6 +9,8 @@ import { authRoute } from "./modules/auth/auth.route";
 import logger from "./middleware/logger";
 const app: Application = express();
 import CookieParser from "cookie-parser";
+import cors from "cors";
+import globalErrorHandler from "./middleware/globalErrorHandler";
 
 // This is a middleware for json data to read the json body and show the data as json not undefined
 app.use(express.json());
@@ -23,12 +25,21 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(CookieParser());
 
+// To get permission to specific address or port
+app.use(
+  cors({
+    origin: "http://localhost:5000",  //ei port ba origin chara anno keo access korte parbe na 
+  }),
+);
+
 app.use("/api/users", userRoute);
 
 app.use("/api/profiles", profileRoute);
 app.use("/api/auth", authRoute);
 
 app.use(logger);
+
+app.use(globalErrorHandler)
 
 app.get("/", (req: Request, res: Response) => {
   //   res.send("Hello World!");

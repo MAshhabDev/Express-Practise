@@ -1,19 +1,24 @@
 import type { Request, Response } from "express";
 import { pool } from "../../db";
 import { userService } from "./user.service";
+import sendResponse from "../../utility/sendResponse";
 
 const createUser = async (req: Request, res: Response) => {
   try {
     const result = await userService.createUserIntoDB(req.body);
 
-    res.status(201).json({
+    sendResponse(res, {
+      statusCode: 201,
       message: "New Data Created",
+      success: true,
       data: result.rows[0], //To get all data
     });
   } catch (error: any) {
-    res.status(500).json({
+    sendResponse(res, {
+      statusCode: 500,
       message: error.message,
-      error: error,
+      success: false,
+      error: error, //To get all data
     });
   }
 };
@@ -123,5 +128,5 @@ export const userController = {
   getUser,
   getSingleUser,
   updateUser,
-  deleteUser
+  deleteUser,
 };

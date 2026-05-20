@@ -20,7 +20,9 @@ const logInUser = async (req: Request, res: Response) => {
       message: "User LogIn SuccessFully",
       data: result, //To get all data
     });
-  } catch (error: any) {
+  } 
+  // Acces token ta valid na hole eikhane error dibe 
+  catch (error: any) {
     res.status(500).json({
       success: false,
 
